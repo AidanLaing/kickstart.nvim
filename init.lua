@@ -1047,7 +1047,14 @@ require('lazy').setup({
 
 -- Enable neovim to be the external editor for Godot, if the cwd has a project.godot file
 if vim.fn.filereadable(vim.fn.getcwd() .. '/project.godot') == 1 then
-  local addr = '127.0.0.1:6004'
+  local addr
+  if vim.fn.has 'win32' == 1 then
+    -- For Windows, use a TCP address
+    addr = '127.0.0.1:6004'
+  else
+    -- For Linux and macOS, use a named pipe
+    addr = './godothost'
+  end
   vim.fn.serverstart(addr)
 end
 
